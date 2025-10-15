@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations - Laravel Journey</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; color: #333;">
+    <nav style="background-color: #dd4c44; padding: 15px; text-align: center;">
+        <a href="index.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Home</a>
+        <a href="installation.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Installation</a>
+        <a href="routing.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Routing</a>
+        <a href="crud.html" style="color: #dd4c44; background-color: white; padding: 10px; border-radius: 5px; margin: 0 15px; text-decoration: none; font-weight: bold;">CRUD Operations</a>
+        <a href="resources.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Resources</a>
+    </nav>
+
+    <div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h1>Laravel CRUD Operations with DB Facade</h1>
+            <p>CRUD stands for <strong style="color: #dd4c44;">C</strong>reate, <strong style="color: #dd4c44;">R</strong>ead, <strong style="color: #dd4c44;">U</strong>pdate, <strong style="color: #dd4c44;">D</strong>elete. We'll use the <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB</code> facade for direct database operations.</p>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Step 1: Create Migration</h2>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+php artisan make:migration create_products_table
+            </pre>
+            <p>Edit the migration file:</p>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+// database/migrations/xxxx_create_products_table.php
+public function up()
+{
+    Schema::create('products', function (Blueprint $table) {
+        $table-&gt;id();
+        $table-&gt;string('name');
+        $table-&gt;text('description');
+        $table-&gt;decimal('price', 8, 2);
+        $table-&gt;timestamps();
+    });
+}
+            </pre>
+            <p>Run the migration:</p>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+php artisan migrate
+            </pre>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Step 2: Create Controller with DB Facade</h2>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+php artisan make:controller ProductController
+            </pre>
+            <p>Here's the controller using DB facade:</p>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+// app/Http/Controllers/ProductController.php
+use Illuminate\Support\Facades\DB;
+
+class ProductController extends Controller
+{
+    // Read - Display all products
+    public function index()
+    {
+        $products = DB::table('products')-&gt;get();
+        return view('products.index', compact('products'));
+    }
+
+    // Read - Display single product
+    public function show($id)
+    {
+        $product = DB::table('products')-&gt;where('id', $id)-&gt;first();
+        return view('products.show', compact('product'));
+    }
+
+    // Create - Show create form
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    // Create - Store new product
+    public function store(Request $request)
+    {
+        DB::table('products')-&gt;insert([
+            'name' =&gt; $request-&gt;name,
+            'description' =&gt; $request-&gt;description,
+            'price' =&gt; $request-&gt;price,
+            'created_at' =&gt; now(),
+            'updated_at' =&gt; now(),
+        ]);
+        
+        return redirect()-&gt;route('products.index');
+    }
+
+    // Update - Show edit form
+    public function edit($id)
+    {
+        $product = DB::table('products')-&gt;where('id', $id)-&gt;first();
+        return view('products.edit', compact('product'));
+    }
+
+    // Update - Update product
+    public function update(Request $request, $id)
+    {
+        DB::table('products')
+            -&gt;where('id', $id)
+            -&gt;update([
+                'name' =&gt; $request-&gt;name,
+                'description' =&gt; $request-&gt;description,
+                'price' =&gt; $request-&gt;price,
+                'updated_at' =&gt; now(),
+            ]);
+            
+        return redirect()-&gt;route('products.index');
+    }
+
+    // Delete - Remove product
+    public function destroy($id)
+    {
+        DB::table('products')-&gt;where('id', $id)-&gt;delete();
+        return redirect()-&gt;route('products.index');
+    }
+}
+            </pre>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Step 3: Define Routes</h2>
+            <p>Add routes in <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">routes/web.php</code>:</p>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+Route::get('/products/{id}/show', [ProductController::class, 'show'])->name('products.show');
+Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+            </pre>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Step 4: Create Views</h2>
+
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+php artusan make:view products.index
+php artusan make:view products.show
+php artusan make:view products.create
+php artusan make:view products.edit
+            </pre>
+            
+            <h3>Index View (index.blade.php) - Show all products</h3>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;h1&gt;Products&lt;/h1&gt;
+&lt;a href="&#123;&#123; route('products.create') &#125;&#125;"&gt;Add New Product&lt;/a&gt;
+
+@forelse ($products as $product)
+    &lt;div&gt;
+        &lt;h3&gt;&lt;a href="&#123;&#123; route('products.show', $product-&gt;id) &#125;&#125;"&gt; &#123;&#123; $product-&gt;name &#125;&#125;&lt;/a&gt;&lt;/h3&gt;
+        &lt;p&gt;Price: $&#123;&#123; $product-&gt;price &#125;&#125;&lt;/p&gt;
+        &lt;a href="&#123;&#123; route('products.edit', $product-&gt;id) &#125;&#125;"&gt;Edit&lt;/a&gt;
+        &lt;form action="&#123;&#123; route('products.destroy', $product-&gt;id) &#125;&#125;" method="POST"&gt;
+            @csrf
+            @method('DELETE')
+            &lt;button type="submit"&gt;Delete&lt;/button&gt;
+        &lt;/form&gt;
+    &lt;/div&gt;
+@empty
+    &lt;div&gt;No products available.&lt;/div&gt;
+@endforelse
+            </pre>
+
+            <h3>Show View (show.blade.php)</h3>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;h1&gt;&#123;&#123; $product-&gt;name &#125;&#125;&lt;/h1&gt;
+&lt;div&gt;
+    &lt;p&gt;&#123;&#123; $product-&gt;description &#125;&#125;&lt;/p&gt;
+    &lt;p&gt;Price: $&#123;&#123; $product-&gt;price &#125;&#125;&lt;/p&gt;
+&lt;/div&gt;
+&lt;a href="&#123;&#123; route('products.edit', $product-&gt;id) &#125;&#125;"&gt;Edit&lt;/a&gt;
+&lt;form action="&#123;&#123; route('products.destroy', $product-&gt;id) &#125;&#125;" method="POST"&gt;
+    @csrf
+    @method('DELETE')
+    &lt;button type="submit"&gt;Delete&lt;/button&gt;
+&lt;/form&gt;
+&lt;/div&gt;
+            </pre>
+
+            <h3>Create Form (create.blade.php)</h3>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;h1&gt;Create New Product&lt;/h1&gt;
+&lt;form action="{{ route('products.store') }}" method="POST"&gt;
+    @csrf
+    &lt;div&gt;
+        &lt;label&gt;Name:&lt;/label&gt;
+        &lt;input type="text" name="name" required&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label&gt;Description:&lt;/label&gt;
+        &lt;textarea name="description" required&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label&gt;Price:&lt;/label&gt;
+        &lt;input type="number" name="price" step="0.01" required&gt;
+    &lt;/div&gt;
+    &lt;button type="submit"&gt;Create Product&lt;/button&gt;
+&lt;/form&gt;
+            </pre>
+
+            <h3>Edit Form (edit.blade.php)</h3>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;h1&gt;Edit Product&lt;/h1&gt;
+&lt;form action="{{ route('products.update', $product-&gt;id) }}" method="POST"&gt;
+    @csrf
+    @method('PUT')
+    &lt;div&gt;
+        &lt;label&gt;Name:&lt;/label&gt;
+        &lt;input type="text" name="name" value="{{ $product-&gt;name }}" required&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label&gt;Description:&lt;/label&gt;
+        &lt;textarea name="description" required&gt;{{ $product-&gt;description }}&lt;/textarea&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label&gt;Price:&lt;/label&gt;
+        &lt;input type="number" name="price" value="{{ $product-&gt;price }}" step="0.01" required&gt;
+    &lt;/div&gt;
+    &lt;button type="submit"&gt;Update Product&lt;/button&gt;
+&lt;/form&gt;
+            </pre>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Common DB Facade Methods</h2>
+            <ul>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->get()</code> - Get all records</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->where('id', 1)->first()</code> - Get single record</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->insert([...])</code> - Insert new record</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->where('id', 1)->update([...])</code> - Update record</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->where('id', 1)->delete()</code> - Delete record</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->count()</code> - Count records</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">DB::table('users')->orderBy('name')->get()</code> - Order results</li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <figure style="text-align: center; margin: 0;">
+                <img src="images/db-facade.png" alt="Diagram showing DB facade operations in Laravel" width="600">
+                <figcaption style="margin-top: 10px; font-style: italic;">DB facade provides direct database access for CRUD operations</figcaption>
+            </figure>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>DB Facade vs Eloquent</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #dd4c44; color: white;">
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Feature</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">DB Facade</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Eloquent ORM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Performance</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Faster (raw SQL)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Slower (object mapping)</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;">Learning Curve</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Easier for beginners</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">More concepts to learn</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Relationships</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Manual JOINs</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Built-in relationships</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;">Use Case</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Simple queries, reports</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Complex business logic</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Great! You've learned CRUD operations using the DB Facade. This approach is perfect for beginners and simple applications. Continue with <a href="resources.html" style="color: #dd4c44;">additional resources</a> to learn about Eloquent ORM and other advanced features.</p>
+        </div>
+    </div>
+    <footer style="background-color: #dd4c44; color: white; text-align: center; padding: 15px; margin-top: 15px;">
+        <p>&copy; 2025 Laravel Journey. All rights reserved.</p>
+    </footer>
+</body>
+</html>

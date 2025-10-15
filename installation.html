@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Installation Guide - Laravel Journey</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; color: #333;">
+    <nav style="background-color: #dd4c44; padding: 15px; text-align: center;">
+        <a href="index.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Home</a>
+        <a href="installation.html" style="color: #dd4c44; background-color: white; padding: 10px; border-radius: 5px; margin: 0 15px; text-decoration: none; font-weight: bold;">Installation</a>
+        <a href="routing.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Routing</a>
+        <a href="crud.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">CRUD Operations</a>
+        <a href="resources.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Resources</a>
+    </nav>
+
+    <div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h1>Laravel Installation Guide</h1>
+            <p>Follow these steps to get Laravel installed on your system and create your first project.</p>
+            
+            <h2>Prerequisites</h2>
+            <ul>
+                <li>PHP 8.1 or higher</li>
+                <li>Composer (PHP dependency manager)</li>
+                <li>Database (MySQL, PostgreSQL, SQLite)</li>
+                <li>Web server (Apache/Nginx) or PHP built-in server</li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Step 1: Install Composer</h2>
+            <p>If you don't have Composer installed, download it from <a href="https://getcomposer.org/" target="_blank" style="color: #ff2d20;">getcomposer.org</a></p>
+            
+            <h2>Step 2: Create New Laravel Project</h2>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">composer create-project laravel/laravel my-project</pre>
+            <p>This command will create a new Laravel project in a "my-project" directory.</p>
+
+            <h2>Step 3: Serve Your Application</h2>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">cd my-project
+php artisan serve</pre>
+            <p>Your application will be available at <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">http://localhost:8000</code></p>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <figure style="text-align: center; margin: 0;">
+                <img src="images/installation-steps.png" alt="Terminal showing Laravel installation process with composer commands" width="600">
+                <figcaption style="margin-top: 10px; font-style: italic;">Successful Laravel installation in terminal</figcaption>
+            </figure>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Once installed, you should see the default Laravel welcome page. Ready to learn about <a href="routing.html" style="color: #ff2d20;">routing</a>?</p>
+            <p>Having trouble? Check the <a href="resources.html" style="color: #dd4c44;">resources page</a> for help.</p>
+        </div>
+    </div>
+    <footer style="background-color: #dd4c44; color: white; text-align: center; padding: 15px; margin-top: 15px;">
+        <p>&copy; 2025 Laravel Journey. All rights reserved.</p>
+    </footer>
+</body>
+</html>

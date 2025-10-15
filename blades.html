@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blade Templates - Laravel Journey</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; color: #333;">
+    <nav style="background-color: #dd4c44; padding: 15px; text-align: center;">
+        <a href="index.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Home</a>
+        <a href="installation.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Installation</a>
+        <a href="routing.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Routing</a>
+        <a href="blades.html" style="color: #dd4c44; background-color: white; padding: 10px; border-radius: 5px; margin: 0 15px; text-decoration: none; font-weight: bold;">Blade Templates</a>
+        <a href="resources.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Resources</a>
+    </nav>
+
+    <div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h1>Laravel Blade Templates</h1>
+            <p>Blade is Laravel's simple yet powerful templating engine. Unlike other PHP templating engines, Blade does not restrict you from using plain PHP code in your views.</p>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Basic Blade Syntax</h2>
+            <p>Blade files use the <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">.blade.php</code> file extension and are typically stored in the <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">resources/views</code> directory.</p>
+            
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;!-- Displaying data --&gt;
+&lt;h1&gt;Hello, {{ $name }}!&lt;/h1&gt;
+
+&lt;!-- Conditional statements --&gt;
+@if (count($records) === 1)
+    I have one record!
+@elseif (count($records) > 1)
+    I have multiple records!
+@else
+    I don't have any records!
+@endif
+
+&lt;!-- Loops --&gt;
+@foreach ($users as $user)
+    &lt;p&gt;This is user {{ $user-&gt;id }}&lt;/p&gt;
+@endforeach
+            </pre>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Template Inheritance</h2>
+            <p>Blade's template inheritance allows you to build a master template that can be extended by child views.</p>
+            
+            <h3>Master Layout (layout.blade.php)</h3>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;App Name - @yield('title')&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        @section('sidebar')
+            This is the master sidebar.
+        @show
+
+        &lt;div class="container"&gt;
+            @yield('content')
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+
+            <h3>Child View (home.blade.php)</h3>
+            <pre style="background: #2d3748; color: white; padding: 15px; border-radius: 5px; overflow-x: auto;">
+@extends('layout')
+
+@section('title', 'Page Title')
+
+@section('sidebar')
+    @@parent
+    &lt;p&gt;This is appended to the master sidebar.&lt;/p&gt;
+@endsection
+
+@section('content')
+    &lt;p&gt;This is my body content.&lt;/p&gt;
+@endsection
+            </pre>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2>Common Blade Directives</h2>
+            <ul>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@if</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@else</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@endif</code> - Conditional statements</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@forelse</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@empty</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@endforelse</code> - Looping through arrays with an else clause</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@foreach</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@endforeach</code> - Looping through arrays</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@for</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@endfor</code> - For loops</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@include</code> - Including sub-views</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@extends</code> - Extending a layout</li>
+                <li><code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@section</code> / <code style="background: #e2e8f0; padding: 2px 5px; border-radius: 3px;">@yield</code> - Defining and yielding sections</li></ul>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <figure style="text-align: center; margin: 0;">
+                <img src="images/blade-syntax.png" alt="Code example showing Blade template syntax with conditional statements and loops" width="600">
+                <figcaption style="margin-top: 10px; font-style: italic;">Blade template example showing syntax highlighting</figcaption>
+            </figure>
+        </div>
+
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Now you understand Blade templating! Continue learning with <a href="resources.html" style="color: #ff2d20;">additional resources</a> or go back to review <a href="routing.html" style="color: #ff2d20;">routing basics</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
